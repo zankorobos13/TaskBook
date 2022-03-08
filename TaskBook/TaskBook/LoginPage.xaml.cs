@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -49,14 +48,28 @@ namespace TaskBook
                 Content = login_entry
             };
 
+            StackLayout password_layout = new StackLayout() { Orientation = StackOrientation.Horizontal };
+
             Entry password_entry = new Entry()
             {
                 Placeholder = "Пароль",
                 TextColor = Color.Black,
-                Margin = new Thickness(20, 0, 20, 0),
+                Margin = new Thickness(20, 0, 0, 0),
                 FontSize = 20,
-                IsPassword = true
+                IsPassword = true,
+                WidthRequest = 250
             };
+
+            Image visibility_status_icon = new Image()
+            {
+                Source = "vis.png",
+                ScaleX = 0.8,
+                ScaleY = 0.8,
+                Margin = 0
+            };
+
+            password_layout.Children.Add(password_entry);
+            password_layout.Children.Add(visibility_status_icon);
 
             Frame password_frame = new Frame()
             {
@@ -65,7 +78,7 @@ namespace TaskBook
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 Margin = new Thickness(30, 50, 30, 0),
                 Padding = new Thickness(0, 5, 0, 5),
-                Content = password_entry
+                Content = password_layout
             };
 
             Button login_button = new Button()
@@ -78,13 +91,36 @@ namespace TaskBook
                 Margin = new Thickness(30, 70, 30, 0)
             };
 
-            
+
+            TapGestureRecognizer tapGestureRecognizer = new TapGestureRecognizer();
+            tapGestureRecognizer.Tapped += ChangeVisibilityStatus;
+            visibility_status_icon.GestureRecognizers.Add(tapGestureRecognizer);
+
             layout.Children.Add(info_label);
             layout.Children.Add(login_frame);
             layout.Children.Add(password_frame);
             layout.Children.Add(login_button);
 
             Content = layout;
+
+            void ChangeVisibilityStatus(object sender, EventArgs e)
+            {
+                string visibility_status = visibility_status_icon.Source.ToString();
+
+                if (visibility_status == "File: vis.png")
+                {
+                    visibility_status_icon.Source = "invis.png";
+                    password_entry.IsPassword = false;
+                }
+                else
+                {
+                    visibility_status_icon.Source = "vis.png";
+                    password_entry.IsPassword = true;
+                }
+
+            }
         }
+
+        
     }
 }
