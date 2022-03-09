@@ -1,31 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using System.Text;
-using MySqlConnector;
 
 namespace TaskBook
 {
-    // Класс для работы с базой данных 
-    public class DB
+    public static class Encrypt
     {
-        readonly MySqlConnection connection = new MySqlConnection("server=remotemysql.com;port=3306;username=NqaN7lnsn5;password=WGxtoGYopq;database=NqaN7lnsn5");
+        
+        public static string Sha256(string str)
+        {
+            SHA256 sha256 = SHA256.Create();
+            byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(str));
+            StringBuilder sb = new StringBuilder();
 
-        // Открыть соединение
-        public void OpenConnection()
-        {
-            if (connection.State == System.Data.ConnectionState.Closed)
-                connection.Open();
-        }
-        // Закрыть соединение
-        public void CloseConnection()
-        {
-            if (connection.State == System.Data.ConnectionState.Open)
-                connection.Close();
-        }
-        // Вернуть соединение
-        public MySqlConnection GetConnection()
-        {
-            return connection;
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                sb.Append(bytes[i].ToString("x2"));
+            }
+
+            return sb.ToString();
         }
     }
 }

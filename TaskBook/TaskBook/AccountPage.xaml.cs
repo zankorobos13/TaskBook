@@ -28,6 +28,12 @@ namespace TaskBook
             await Navigation.PushAsync(new RegisterPage());
         }
 
+        private void Exit(object sender, EventArgs e)
+        {
+            Preferences.Set("login", null);
+            OnAppearing();
+        }
+
 
         protected override void OnAppearing()
         {
@@ -76,7 +82,19 @@ namespace TaskBook
             }
             else
             {
+                Button exit_button = new Button()
+                {
+                    Text = "Выйти",
+                    FontSize = 25,
+                    TextColor = Color.White,
+                    BackgroundColor = Color.FromHex("#000080"),
+                    CornerRadius = 20,
+                    Margin = new Thickness(30, 70, 30, 0)
+                };
 
+                exit_button.Clicked += Exit;
+
+                layout.Children.Add(exit_button);
             }
 
             Content = layout;

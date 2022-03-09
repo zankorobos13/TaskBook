@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -91,6 +92,7 @@ namespace TaskBook
                 Margin = new Thickness(30, 70, 30, 0)
             };
 
+            login_button.Clicked += Login;
 
             TapGestureRecognizer tapGestureRecognizer = new TapGestureRecognizer();
             tapGestureRecognizer.Tapped += ChangeVisibilityStatus;
@@ -102,6 +104,25 @@ namespace TaskBook
             layout.Children.Add(login_button);
 
             Content = layout;
+
+            async void Login(object sender, EventArgs e)
+            {
+                string login = login_entry.Text;
+                string password = password_entry.Text;
+
+                string login_status = DB.Login(login, password);
+
+                if (login_status == "ok")
+                {
+                    Preferences.Set("login", login);
+                    await DisplayAlert("Успех!", "Вы успешно вошли в аккаунт", "OK");
+                    await Navigation.PopAsync();
+                }
+                else if (login_status == "no")
+                    await DisplayAlert("Ошибка!", "Неверный логин или пароль", "OK");
+                else
+                    await DisplayAlert("Ошибка!", "Ошибка подключения к базе данных, проверьте интернет соединение", "OK");
+            }
 
             void ChangeVisibilityStatus(object sender, EventArgs e)
             {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -117,9 +117,9 @@ namespace TaskBook
                 Content = password_rep_layout
             };
 
-            Button login_button = new Button()
+            Button register_button = new Button()
             {
-                Text = "Войти",
+                Text = "Зарегистрироваться",
                 FontSize = 25,
                 TextColor = Color.White,
                 BackgroundColor = Color.FromHex("#000080"),
@@ -127,6 +127,7 @@ namespace TaskBook
                 Margin = new Thickness(30, 70, 30, 0)
             };
 
+            register_button.Clicked += Register;
 
             TapGestureRecognizer tapGestureRecognizer1 = new TapGestureRecognizer();
             tapGestureRecognizer1.Tapped += ChangeVisibilityStatus1;
@@ -141,9 +142,47 @@ namespace TaskBook
             layout.Children.Add(login_frame);
             layout.Children.Add(password_frame);
             layout.Children.Add(password_rep_frame);
-            layout.Children.Add(login_button);
+            layout.Children.Add(register_button);
 
             Content = layout;
+
+
+            async void Register(object sender, EventArgs e)
+            {
+                string login = login_entry.Text;
+                string password = password_entry.Text;
+                string password_rep = password_rep_entry.Text;
+
+                if (login.Length > 3 && login.Length < 30 && password.Length > 3 && password.Length < 30 && password == password_rep)
+                {
+                    string reg_status = DB.Register(login, password);
+
+                    if (reg_status == "ok")
+                    {
+                        Preferences.Set("login", login);
+                        await DisplayAlert("Успех!", "Вы успешно зарегестрировались", "OK");
+                        await Navigation.PopAsync();
+                    }
+                    else if (reg_status == "repeat")
+                        await DisplayAlert("Ошибка!", "Пользователь с таким логином уже существует", "OK");
+                    else
+                        await DisplayAlert("Ошибка!", "Ошибка подключения к базе данных, проверьте интернет соединение", "OK");
+                }
+                else if (login.Length <= 3)
+                    await DisplayAlert("Ошибка!", "Логин должен содержать более 3-х символов", "OK");
+                else if (login.Length >= 30)
+                    await DisplayAlert("Ошибка!", "Логин должен содержать менее 30-и символов", "OK");
+                else if (password.Length <= 3)
+                    await DisplayAlert("Ошибка!", "Пароль должен содержать более 3-х символов", "OK");
+                else if (password.Length >= 30)
+                    await DisplayAlert("Ошибка!", "Пароль должен содержать менее 30-и символов", "OK");
+                else if (password != password_rep)
+                    await DisplayAlert("Ошибка!", "Пароли не совпадают", "OK");
+                else
+                    await DisplayAlert("Ошибка!", "Непредвиденная ошибка", "OK");
+            }
+
+
 
             void ChangeVisibilityStatus1(object sender, EventArgs e)
             {
