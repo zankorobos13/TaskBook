@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using MySqlConnector;
+using Xamarin.Essentials;
 
 namespace TaskBook
 {
@@ -30,6 +31,11 @@ namespace TaskBook
                 {
                     temp_login = reader[0].ToString();
                     temp_password = reader[1].ToString();
+
+                    if (reader[2].ToString() == null || reader[2].ToString().Trim(' ') == "")
+                        Preferences.Set("room", null);
+                    else
+                        Preferences.Set("room", reader[2].ToString());
                 }
 
                 db.CloseConnection();

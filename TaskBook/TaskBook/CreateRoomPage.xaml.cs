@@ -10,9 +10,9 @@ using Xamarin.Forms.Xaml;
 namespace TaskBook
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class RegisterPage : ContentPage
+    public partial class CreateRoomPage : ContentPage
     {
-        public RegisterPage()
+        public CreateRoomPage()
         {
             InitializeComponent();
         }
@@ -23,7 +23,7 @@ namespace TaskBook
 
             Label info_label = new Label()
             {
-                Text = "РЕГИСТРАЦИЯ",
+                Text = "СОЗДАНИЕ КОМНАТЫ",
                 TextColor = Color.Black,
                 FontSize = 35,
                 FontAttributes = FontAttributes.Bold,
@@ -31,25 +31,25 @@ namespace TaskBook
                 Margin = new Thickness(0, 80, 0, 0)
             };
 
-            Entry login_entry = new Entry()
+            Entry name_entry = new Entry()
             {
-                Placeholder = "Логин",
+                Placeholder = "Название комнаты",
                 TextColor = Color.Black,
                 Margin = new Thickness(20, 0, 20, 0),
                 FontSize = 20
             };
 
-            Frame login_frame = new Frame()
+            Frame name_frame = new Frame()
             {
                 BorderColor = Color.Black,
                 CornerRadius = 50,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 Margin = new Thickness(30, 50, 30, 0),
                 Padding = new Thickness(0, 5, 0, 5),
-                Content = login_entry
+                Content = name_entry
             };
 
-            
+
 
             StackLayout password_layout = new StackLayout() { Orientation = StackOrientation.Horizontal };
 
@@ -119,7 +119,7 @@ namespace TaskBook
 
             Button register_button = new Button()
             {
-                Text = "Зарегистрироваться",
+                Text = "Создать",
                 FontSize = 25,
                 TextColor = Color.White,
                 BackgroundColor = Color.FromHex("#000080"),
@@ -139,30 +139,29 @@ namespace TaskBook
 
 
             layout.Children.Add(info_label);
-            layout.Children.Add(login_frame);
+            layout.Children.Add(name_frame);
             layout.Children.Add(password_frame);
             layout.Children.Add(password_rep_frame);
             layout.Children.Add(register_button);
 
             Content = layout;
 
-
             async void Register(object sender, EventArgs e)
             {
-                string login = login_entry.Text ?? "";
+                string name = name_entry.Text ?? "";
                 string password = password_entry.Text ?? "";
                 string password_rep = password_rep_entry.Text ?? "";
 
-                bool isLoginValid;
+                bool isNameValid;
                 bool isPasswordValid;
 
                 try
                 {
-                    isLoginValid = !(login == null || login == "") && (login.Contains(' ') == false);
+                    isNameValid = !(name == null || name == "") && (name.Contains(' ') == false);
                 }
                 catch (Exception)
                 {
-                    isLoginValid = false;
+                    isNameValid = false;
                 }
 
                 try
@@ -174,32 +173,21 @@ namespace TaskBook
                     isPasswordValid = false;
                 }
 
-                if (login.Length > 3 && login.Length < 30 && password.Length > 3 && password.Length < 30 && isLoginValid && isPasswordValid && password == password_rep)
-                {
-                    string reg_status = DB.Register(login, password);
 
-                    if (reg_status == "ok")
-                    {
-                        Preferences.Set("login", login);
-                        Preferences.Set("room", null);
-                        await DisplayAlert("Успех!", "Вы успешно зарегестрировались", "OK");
-                        await Navigation.PopAsync();
-                    }
-                    else if (reg_status == "repeat")
-                        await DisplayAlert("Ошибка!", "Пользователь с таким логином уже существует", "OK");
-                    else
-                        await DisplayAlert("Ошибка!", "Ошибка подключения к базе данных, проверьте интернет соединение", "OK");
+                if (name.Length > 3 && name.Length < 30 && password.Length > 3 && password.Length < 30 && isNameValid && isPasswordValid && password == password_rep)
+                {
+                    await DisplayAlert("Успех!", "Успех!", "OK");
                 }
-                else if (login.Length <= 3)
-                    await DisplayAlert("Ошибка!", "Логин должен содержать более 3-х символов", "OK");
-                else if (login.Length >= 30)
-                    await DisplayAlert("Ошибка!", "Логин должен содержать менее 30-и символов", "OK");
+                else if (name.Length <= 3)
+                    await DisplayAlert("Ошибка!", "Название должно содержать более 3-х символов", "OK");
+                else if (name.Length >= 30)
+                    await DisplayAlert("Ошибка!", "Название должно содержать менее 30-и символов", "OK");
                 else if (password.Length <= 3)
                     await DisplayAlert("Ошибка!", "Пароль должен содержать более 3-х символов", "OK");
                 else if (password.Length >= 30)
                     await DisplayAlert("Ошибка!", "Пароль должен содержать менее 30-и символов", "OK");
-                else if (!isLoginValid)
-                    await DisplayAlert("Ошибка!", "Логин не должен содержать в себе пробелы", "OK");
+                else if (!isNameValid)
+                    await DisplayAlert("Ошибка!", "Название не должно содержать в себе пробелы", "OK");
                 else if (!isPasswordValid)
                     await DisplayAlert("Ошибка!", "Пароль не должен содержать в себе пробелы", "OK");
                 else if (password != password_rep)
@@ -207,8 +195,6 @@ namespace TaskBook
                 else
                     await DisplayAlert("Ошибка!", "Непредвиденная ошибка", "OK");
             }
-
-
 
             void ChangeVisibilityStatus1(object sender, EventArgs e)
             {
@@ -242,7 +228,5 @@ namespace TaskBook
                 }
             }
         }
-
-        
     }
 }

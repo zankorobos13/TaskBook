@@ -28,6 +28,17 @@ namespace TaskBook
             await Navigation.PushAsync(new RegisterPage());
         }
 
+        private async void CreateRoom(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new CreateRoomPage());
+        }
+
+        private void LeaveRoom(object sender, EventArgs e)
+        {
+            Preferences.Set("room", null);
+            OnAppearing();
+        }
+
         private void Exit(object sender, EventArgs e)
         {
             Preferences.Set("login", null);
@@ -82,6 +93,75 @@ namespace TaskBook
             }
             else
             {
+                Label login_label = new Label()
+                {
+                    Text = Preferences.Get("login", null),
+                    TextColor = Color.Black,
+                    FontAttributes = FontAttributes.Italic,
+                    Padding = new Thickness(30, 10, 0, 0)
+                };
+
+                login_label.FontSize = 50 - login_label.Text.Length;
+
+                layout.Children.Add(login_label);
+
+                if (Preferences.Get("room", null) == null)
+                {
+                    Button enter_room_button = new Button()
+                    {
+                        Text = "Войти в комнату",
+                        FontSize = 25,
+                        TextColor = Color.White,
+                        BackgroundColor = Color.FromHex("#000080"),
+                        CornerRadius = 20,
+                        Margin = new Thickness(30, 70, 30, 0)
+                    };
+
+                    Button create_room_button = new Button()
+                    {
+                        Text = "Создать комнату",
+                        FontSize = 25,
+                        TextColor = Color.White,
+                        BackgroundColor = Color.FromHex("#000080"),
+                        CornerRadius = 20,
+                        Margin = new Thickness(30, 70, 30, 0)
+                    };
+
+                    create_room_button.Clicked += CreateRoom;
+
+                    layout.Children.Add(enter_room_button);
+                    layout.Children.Add(create_room_button);
+                }
+                else
+                {
+                    Label room_label = new Label()
+                    {
+                        Text = Preferences.Get("room", null),
+                        FontAttributes = FontAttributes.Italic,
+                        TextColor = Color.Black,
+                        Padding = new Thickness(30, 10, 0, 0)
+                    };
+
+                    room_label.FontSize = 50 - room_label.Text.Length;
+
+                    Button leave_room_button = new Button()
+                    {
+                        Text = "Покинуть комнату",
+                        FontSize = 25,
+                        TextColor = Color.White,
+                        BackgroundColor = Color.FromHex("#000080"),
+                        CornerRadius = 20,
+                        Margin = new Thickness(30, 70, 30, 0)
+                    };
+
+                    leave_room_button.Clicked += LeaveRoom;
+
+                    layout.Children.Add(room_label);
+                    layout.Children.Add(leave_room_button);
+
+                }
+                
+
                 Button exit_button = new Button()
                 {
                     Text = "Выйти",
