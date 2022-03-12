@@ -136,13 +136,23 @@ namespace TaskBook
                 {
                     Label room_label = new Label()
                     {
-                        Text = Preferences.Get("room", null),
+                        Text = "Комната: " + Preferences.Get("room", null),
                         FontAttributes = FontAttributes.Italic,
                         TextColor = Color.Black,
                         Padding = new Thickness(30, 10, 0, 0)
                     };
 
-                    room_label.FontSize = 50 - room_label.Text.Length;
+                    room_label.FontSize = 40 - room_label.Text.Length;
+
+                    Label role_label = new Label()
+                    {
+                        Text = "Роль: " + Preferences.Get("role", null),
+                        FontAttributes = FontAttributes.Italic,
+                        TextColor = Color.Black,
+                        Padding = new Thickness(30, 10, 0, 0)
+                    };
+
+                    role_label.FontSize = 40 - role_label.Text.Length;
 
                     Button leave_room_button = new Button()
                     {
@@ -157,6 +167,7 @@ namespace TaskBook
                     leave_room_button.Clicked += LeaveRoom;
 
                     layout.Children.Add(room_label);
+                    layout.Children.Add(role_label);
                     layout.Children.Add(leave_room_button);
 
                 }

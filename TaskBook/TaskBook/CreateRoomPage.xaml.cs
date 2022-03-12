@@ -176,7 +176,19 @@ namespace TaskBook
 
                 if (name.Length > 3 && name.Length < 30 && password.Length > 3 && password.Length < 30 && isNameValid && isPasswordValid && password == password_rep)
                 {
-                    await DisplayAlert("Успех!", "Успех!", "OK");
+                    string reg_status = DB.AddRoom(name, password);
+
+                    if (reg_status == "ok")
+                    {
+                        Preferences.Set("room", name);
+                        Preferences.Set("role", "admin");
+                        await DisplayAlert("Успех!", "Вы успешно создали комнату", "OK");
+                        await Navigation.PopAsync();
+                    }
+                    else if (reg_status == "repeat")
+                        await DisplayAlert("Ошибка!", "Комната с таким именем уже существует", "OK");
+                    else
+                        await DisplayAlert("Ошибка!", "Ошибка подключения к базе данных, проверьте интернет соединение", "OK");
                 }
                 else if (name.Length <= 3)
                     await DisplayAlert("Ошибка!", "Название должно содержать более 3-х символов", "OK");

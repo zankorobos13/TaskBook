@@ -9,8 +9,52 @@ namespace TaskBook
     
     public class DB
     {
-        readonly MySqlConnection connection = new MySqlConnection("server=remotemysql.com;port=3306;username=FFoXo8zLEg;password=22HWTsEDuI;database=FFoXo8zLEg");
+        public readonly MySqlConnection connection = new MySqlConnection("server=remotemysql.com;port=3306;username=FFoXo8zLEg;password=22HWTsEDuI;database=FFoXo8zLEg");
 
+        public static string AddRoom(string name, string password)
+        {
+            
+                DB db = new DB();
+                MySqlConnection connection = db.GetConnection();
+                db.OpenConnection();
+                string sql_command = "SELECT * FROM `rooms` WHERE name = '" + name + "'";
+                MySqlCommand command = new MySqlCommand(sql_command, connection);
+                MySqlDataReader reader = command.ExecuteReader();
+
+                string temp = null;
+
+                while (reader.Read())
+                {
+                    temp = reader[0].ToString();
+                }
+
+                db.CloseConnection();
+
+                if (temp != null)
+                {
+                    return "repeat";
+                }
+                else
+                {
+                    db.OpenConnection();
+                    sql_command = "INSERT INTO `rooms` (name, password) VALUES ('" + name + "', '" + Encrypt.Sha256(password) + "')";
+                    command = new MySqlCommand(sql_command, connection);
+                    command.ExecuteNonQuery();
+                    db.CloseConnection();
+
+                    db.OpenConnection();
+                    sql_command = "UPDATE `users` SET room = '" + name + "', role = 'admin' WHERE login = '" + Preferences.Get("login", null) + "'";
+                    command = new MySqlCommand(sql_command, connection);
+                    command.ExecuteNonQuery();
+                    db.CloseConnection();
+
+                    return "ok";
+                }
+
+            
+
+
+        }
         public static string Login(string login, string password)
         {
             password = Encrypt.Sha256(password);
@@ -36,6 +80,11 @@ namespace TaskBook
                         Preferences.Set("room", null);
                     else
                         Preferences.Set("room", reader[2].ToString());
+
+                    if (reader[3].ToString() == null || reader[3].ToString().Trim(' ') == "")
+                        Preferences.Set("role", null);
+                    else
+                        Preferences.Set("role", reader[3].ToString());
                 }
 
                 db.CloseConnection();
@@ -81,6 +130,7 @@ namespace TaskBook
                     sql_command = "INSERT INTO `users` (login, password) VALUES ('" + login + "', '" + Encrypt.Sha256(password) + "')";
                     command = new MySqlCommand(sql_command, connection);
                     command.ExecuteNonQuery();
+                    db.CloseConnection();
 
                     return "ok";
                 }
