@@ -11,6 +11,72 @@ namespace TaskBook
     {
         public readonly MySqlConnection connection = new MySqlConnection("server=remotemysql.com;port=3306;username=FFoXo8zLEg;password=22HWTsEDuI;database=FFoXo8zLEg");
 
+        public static string LeaveRoom()
+        {
+            try
+            {
+                DB db = new DB();
+                MySqlConnection connection = db.GetConnection();
+                db.OpenConnection();
+                string sql_command = "UPDATE `users` SET room = NULL, role = NULL WHERE login = '" + Preferences.Get("login", null) + "'";
+                MySqlCommand command = new MySqlCommand(sql_command, connection);
+                command.ExecuteNonQuery();
+                db.CloseConnection();
+
+                return "ok";
+            }
+            catch (Exception)
+            {
+                return "error";
+            }
+        }
+
+        public static string EnterRoom(string name, string password)
+        {
+            password = Encrypt.Sha256(password);
+
+            try
+            {
+                DB db = new DB();
+                MySqlConnection connection = db.GetConnection();
+                db.OpenConnection();
+                string sql_command = "SELECT * FROM `rooms` WHERE name = '" + name + "'";
+                MySqlCommand command = new MySqlCommand(sql_command, connection);
+                MySqlDataReader reader = command.ExecuteReader();
+
+                string temp_name = null;
+                string temp_password = null;
+
+                while (reader.Read())
+                {
+                    temp_name = reader[0].ToString();
+                    temp_password = reader[1].ToString();
+                }
+
+                db.CloseConnection();
+
+                if (temp_name == name && temp_password == password)
+                {
+                    db.OpenConnection();
+                    sql_command = "UPDATE `users` SET room = '" + name + "', role = 'user' WHERE login = '" + Preferences.Get("login", null) + "'";
+                    command = new MySqlCommand(sql_command, connection);
+                    command.ExecuteNonQuery();
+                    db.CloseConnection();
+
+                    return "ok";
+                }
+                else
+                {
+                    return "no";
+                }
+            }
+            catch (Exception)
+            {
+                return "error";
+            }
+
+        }
+
         public static string AddRoom(string name, string password)
         {
             try

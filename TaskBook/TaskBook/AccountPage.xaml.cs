@@ -17,6 +17,10 @@ namespace TaskBook
             InitializeComponent();
         }
 
+        private async void EnterRoom(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new EnterRoomPage());
+        }
 
         private async void Login(object sender, EventArgs e)
         {
@@ -33,10 +37,20 @@ namespace TaskBook
             await Navigation.PushAsync(new CreateRoomPage());
         }
 
-        private void LeaveRoom(object sender, EventArgs e)
+        private async void LeaveRoom(object sender, EventArgs e)
         {
-            Preferences.Set("room", null);
-            OnAppearing();
+            string leave_status = DB.LeaveRoom();
+
+            if (leave_status == "ok")
+            {
+                Preferences.Set("room", null);
+                Preferences.Set("role", null);
+                OnAppearing();
+            }
+            else
+            {
+                await DisplayAlert("Ошибка!", "Ошибка подключения к базе данных, невозможно покинуть комнату", "OK");
+            }
         }
 
         private void Exit(object sender, EventArgs e)
@@ -127,6 +141,7 @@ namespace TaskBook
                         Margin = new Thickness(30, 70, 30, 0)
                     };
 
+                    enter_room_button.Clicked += EnterRoom;
                     create_room_button.Clicked += CreateRoom;
 
                     layout.Children.Add(enter_room_button);
