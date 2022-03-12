@@ -13,7 +13,8 @@ namespace TaskBook
 
         public static string AddRoom(string name, string password)
         {
-            
+            try
+            {
                 DB db = new DB();
                 MySqlConnection connection = db.GetConnection();
                 db.OpenConnection();
@@ -37,24 +38,24 @@ namespace TaskBook
                 else
                 {
                     db.OpenConnection();
-                    sql_command = "INSERT INTO `rooms` (name, password) VALUES ('" + name + "', '" + Encrypt.Sha256(password) + "')";
-                    command = new MySqlCommand(sql_command, connection);
-                    command.ExecuteNonQuery();
-                    db.CloseConnection();
-
-                    db.OpenConnection();
-                    sql_command = "UPDATE `users` SET room = '" + name + "', role = 'admin' WHERE login = '" + Preferences.Get("login", null) + "'";
+                    sql_command = "INSERT INTO `rooms` (name, password) VALUES ('" + name + "', '" + Encrypt.Sha256(password) + "'); UPDATE `users` SET room = '" + name + "', role = 'admin' WHERE login = '" + Preferences.Get("login", null) + "'";
                     command = new MySqlCommand(sql_command, connection);
                     command.ExecuteNonQuery();
                     db.CloseConnection();
 
                     return "ok";
                 }
+            }
+            catch (Exception)
+            {
+                return "error";
+            }
 
-            
+
 
 
         }
+
         public static string Login(string login, string password)
         {
             password = Encrypt.Sha256(password);
