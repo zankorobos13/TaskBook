@@ -39,7 +39,7 @@ namespace TaskBook
 
         private async void LeaveRoom(object sender, EventArgs e)
         {
-            if (Preferences.Get("role", null) == "admin" && await DisplayAlert("Вы уверены?", "Вы действительно хотите покинуть комнату? Если вы захотите вернуться, вы лишитесь роли администратора в этой комнате", "Да", "Нет"))
+            if ((Preferences.Get("role", null) != "admin") || (Preferences.Get("role", null) == "admin" && await DisplayAlert("Вы уверены?", "Вы действительно хотите покинуть комнату? Если вы захотите вернуться, вы лишитесь роли администратора в этой комнате", "Да", "Нет")))
             {
                 string leave_status = DB.LeaveRoom();
 
