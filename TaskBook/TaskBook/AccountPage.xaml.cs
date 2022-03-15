@@ -39,18 +39,22 @@ namespace TaskBook
 
         private async void LeaveRoom(object sender, EventArgs e)
         {
-            string leave_status = DB.LeaveRoom();
+            if (Preferences.Get("role", null) == "admin" && await DisplayAlert("Вы уверены?", "Вы действительно хотите покинуть комнату? Если вы захотите вернуться, вы лишитесь роли администратора в этой комнате", "Да", "Нет"))
+            {
+                string leave_status = DB.LeaveRoom();
 
-            if (leave_status == "ok")
-            {
-                Preferences.Set("room", null);
-                Preferences.Set("role", null);
-                OnAppearing();
+                if (leave_status == "ok")
+                {
+                    Preferences.Set("room", null);
+                    Preferences.Set("role", null);
+                    OnAppearing();
+                }
+                else
+                {
+                    await DisplayAlert("Ошибка!", "Ошибка подключения к базе данных, невозможно покинуть комнату", "OK");
+                }
             }
-            else
-            {
-                await DisplayAlert("Ошибка!", "Ошибка подключения к базе данных, невозможно покинуть комнату", "OK");
-            }
+            
         }
 
         private void Exit(object sender, EventArgs e)

@@ -7,7 +7,7 @@ namespace TaskBook
 {
     public static class Encrypt
     {
-        
+      
         public static string Sha256(string str)
         {
             SHA256 sha256 = SHA256.Create();

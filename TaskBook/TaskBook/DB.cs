@@ -6,7 +6,7 @@ using Xamarin.Essentials;
 
 namespace TaskBook
 {
-    
+
     public class DB
     {
         public readonly MySqlConnection connection = new MySqlConnection("server=remotemysql.com;port=3306;username=FFoXo8zLEg;password=22HWTsEDuI;database=FFoXo8zLEg");
