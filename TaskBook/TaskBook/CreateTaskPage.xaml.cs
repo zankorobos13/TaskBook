@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -17,11 +17,13 @@ namespace TaskBook
             InitializeComponent();
         }
 
+        
+
         protected override void OnAppearing()
         {
             StackLayout layout = new StackLayout();
 
-            Entry login_entry = new Entry()
+            Entry header_entry = new Entry()
             {
                 Placeholder = "Заголовок",
                 TextColor = Color.Black,
@@ -29,14 +31,14 @@ namespace TaskBook
                 FontSize = 20
             };
 
-            Frame login_frame = new Frame()
+            Frame header_frame = new Frame()
             {
                 BorderColor = Color.Black,
                 CornerRadius = 50,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 Margin = new Thickness(30, 50, 30, 0),
                 Padding = new Thickness(0, 5, 0, 5),
-                Content = login_entry
+                Content = header_entry
             };
 
             Editor text = new Editor()
@@ -114,6 +116,7 @@ namespace TaskBook
                 Margin = new Thickness(30, 20, 30, 0)
             };
 
+            create_task_button.Clicked += CreateTask;
 
             priority_layout.Children.Add(priority_label);
             priority_layout.Children.Add(priority_entry);
@@ -121,7 +124,7 @@ namespace TaskBook
             dateTime_layout.Children.Add(dateTime_label);
             dateTime_layout.Children.Add(dateTime_entry);
 
-            layout.Children.Add(login_frame);
+            layout.Children.Add(header_frame);
             layout.Children.Add(text_frame);
             layout.Children.Add(priority_layout);
             layout.Children.Add(dateTime_layout);
@@ -129,6 +132,77 @@ namespace TaskBook
             
 
             Content = layout;
+
+            async void CreateTask(object sender, EventArgs e)
+            {
+                Task task = new Task()
+                {
+                    header = header_entry.Text ?? "",
+                    text = text.Text ?? "",
+                    worker = null,
+                    room = Preferences.Get("room", null),
+                    completed_status = false
+                };
+
+                if (task.header.Trim(' ').Length == 0)
+                {
+                    await DisplayAlert("Ошибка!", "Пустой заголовок задания", "OK");
+                    return;
+                }
+                else if (task.text.Trim(' ').Length == 0)
+                {
+                    await DisplayAlert("Ошибка!", "Пустой текст задания", "OK");
+                    return;
+                }
+                else if (task.header.Length >= 100)
+                {
+                    await DisplayAlert("Ошибка!", "Заголовок задания должен содеражть менее 100 символов", "OK");
+                    return;
+                }
+
+                bool isOk = true;
+
+                try
+                {
+                    int priority = int.Parse(priority_entry.Text);
+
+                    if (priority >= 0 && priority <= 100)
+                        task.priority = priority;
+                    else
+                        await DisplayAlert("Ошибка!", "Недопустимое значение приоритета", "OK");
+                }
+                catch (Exception)
+                {
+                    await DisplayAlert("Ошибка!", "Недопустимое значение приоритета", "OK");
+                    isOk = false;
+                }
+
+
+                if (isOk)
+                {
+                    try
+                    {
+                        string[] dateTimeSplitArr = (dateTime_entry.Text ?? "").Split(' ');
+
+                        DateTime dateTime = new DateTime(int.Parse(dateTimeSplitArr[0]), int.Parse(dateTimeSplitArr[1]), int.Parse(dateTimeSplitArr[2]), int.Parse(dateTimeSplitArr[3]), int.Parse(dateTimeSplitArr[4]), int.Parse(dateTimeSplitArr[5]));
+
+                        task.deadline = dateTime;
+                    }
+                    catch (Exception)
+                    {
+                        await DisplayAlert("Ошибка!", "Недопустимое значение даты и времени", "OK");
+                        isOk = false;
+                    }
+                }
+                
+                if (isOk)
+                {
+                    await DisplayAlert("Успех!", "Задание упешно создано", "OK");
+                }
+                    
+               
+
+            }
         }
     }
 }
