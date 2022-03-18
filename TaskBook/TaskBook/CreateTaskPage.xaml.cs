@@ -147,6 +147,7 @@ namespace TaskBook
                 if (task.header.Trim(' ').Length == 0)
                 {
                     await DisplayAlert("Ошибка!", "Пустой заголовок задания", "OK");
+                    // header_frame.BorderColor = Color.Red;
                     return;
                 }
                 else if (task.text.Trim(' ').Length == 0)
@@ -186,7 +187,7 @@ namespace TaskBook
 
                         DateTime dateTime = new DateTime(int.Parse(dateTimeSplitArr[0]), int.Parse(dateTimeSplitArr[1]), int.Parse(dateTimeSplitArr[2]), int.Parse(dateTimeSplitArr[3]), int.Parse(dateTimeSplitArr[4]), int.Parse(dateTimeSplitArr[5]));
 
-                        task.deadline = dateTime;
+                        task.deadline = dateTime_entry.Text;
                     }
                     catch (Exception)
                     {
@@ -197,11 +198,18 @@ namespace TaskBook
                 
                 if (isOk)
                 {
-                    await DisplayAlert("Успех!", "Задание упешно создано", "OK");
-                }
-                    
-               
+                    string create_task_status = Task.CreateTask(task);
 
+                    if (create_task_status == "ok")
+                    {
+                        await DisplayAlert("Успех!", "Задание успешно создано", "OK");
+                        await Navigation.PopAsync();
+                    }
+                    else
+                    {
+                        await DisplayAlert("Ошибка!", "Ошибка подключения к базе данных, невозможно создать задание", "OK");
+                    }
+                }
             }
         }
     }

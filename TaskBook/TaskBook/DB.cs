@@ -11,6 +11,26 @@ namespace TaskBook
     {
         public readonly MySqlConnection connection = new MySqlConnection("server=remotemysql.com;port=3306;username=FFoXo8zLEg;password=22HWTsEDuI;database=FFoXo8zLEg");
 
+
+        public static string AddTask(string header, string text, int priority, string deadline)
+        {
+            try
+            {
+                DB db = new DB();
+                MySqlConnection connection = db.GetConnection();
+                db.OpenConnection();
+                string sql_command = "INSERT INTO `tasks` (header, text, room, priority, deadline) VALUES ('" + header + "', '" + text + "', '" + Preferences.Get("room", null) + "', " + priority + ", '" + deadline + "');";
+                MySqlCommand command = new MySqlCommand(sql_command, connection);
+                command.ExecuteNonQuery();
+                db.CloseConnection();
+                return "ok";
+            }
+            catch (Exception)
+            {
+                return "error";
+            }
+        }
+
         public static string LeaveRoom()
         {
             try

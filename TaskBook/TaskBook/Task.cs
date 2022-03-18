@@ -12,9 +12,14 @@ namespace TaskBook
         public int priority;
         public string room;
         public bool completed_status;
-        public DateTime deadline;
+        public string deadline;
 
         public Task[] tasks = null;
         public Task current_task;
+
+        public static string CreateTask(Task task)
+        {
+            return DB.AddTask(task.header, task.text, task.priority, task.deadline);
+        }
     }
 }
