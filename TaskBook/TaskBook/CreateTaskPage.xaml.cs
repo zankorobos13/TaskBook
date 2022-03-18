@@ -99,7 +99,7 @@ namespace TaskBook
 
             Entry dateTime_entry = new Entry()
             {
-                Placeholder = "dd MM YY hh mm ss",
+                Placeholder = "dd MM YY hh mm",
                 TextColor = Color.Black,
                 FontSize = 20,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -183,9 +183,12 @@ namespace TaskBook
                 {
                     try
                     {
-                        string[] dateTimeSplitArr = (dateTime_entry.Text ?? "").Split(' ');
+                        string[] dateTimeSplitArr = (dateTime_entry.Text ?? "").Trim(' ').Split(' ');
 
-                        DateTime dateTime = new DateTime(int.Parse(dateTimeSplitArr[0]), int.Parse(dateTimeSplitArr[1]), int.Parse(dateTimeSplitArr[2]), int.Parse(dateTimeSplitArr[3]), int.Parse(dateTimeSplitArr[4]), int.Parse(dateTimeSplitArr[5]));
+                        if (dateTimeSplitArr.Length > 5)
+                            throw new Exception();
+
+                        DateTime dateTime = new DateTime(int.Parse(dateTimeSplitArr[0]), int.Parse(dateTimeSplitArr[1]), int.Parse(dateTimeSplitArr[2]), int.Parse(dateTimeSplitArr[3]), int.Parse(dateTimeSplitArr[4]), 0);
 
                         task.deadline = dateTime_entry.Text;
                     }
