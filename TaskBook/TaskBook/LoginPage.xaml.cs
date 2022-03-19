@@ -115,6 +115,13 @@ namespace TaskBook
                 if (login_status == "ok")
                 {
                     Preferences.Set("login", login);
+
+                    if (Preferences.Get("room", null) != null && Preferences.Get("role", null) == "user")
+                    {
+                        Task.ClearTaks();
+                        DB.GetTasks();
+                    }
+
                     await DisplayAlert("Успех!", "Вы успешно вошли в аккаунт", "OK");
                     await Navigation.PopAsync();
                 }

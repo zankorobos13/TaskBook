@@ -116,6 +116,13 @@ namespace TaskBook
                 {
                     Preferences.Set("room", name);
                     Preferences.Set("role", "user");
+
+                    if (Preferences.Get("room", null) != null && Preferences.Get("role", null) == "user")
+                    {
+                        Task.ClearTaks();
+                        DB.GetTasks();
+                    }
+
                     await DisplayAlert("Успех!", "Вы успешно вошли в комнату", "OK");
                     await Navigation.PopAsync();
                 }

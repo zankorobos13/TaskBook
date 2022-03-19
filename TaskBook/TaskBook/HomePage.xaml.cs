@@ -46,7 +46,14 @@ namespace TaskBook
                 }
                 else
                 {
+                    /*foreach (var item in Task.tasks)
+                    {
+                        Label header = new Label() { Text = item.header, FontSize = 30, Margin = 20 };
+                        Label text = new Label() { Text = item.text, FontSize = 18, Margin = 20 };
 
+                        layout.Children.Add(header);
+                        layout.Children.Add(text);
+                    }*/
                 }
 
                 Content = layout;
