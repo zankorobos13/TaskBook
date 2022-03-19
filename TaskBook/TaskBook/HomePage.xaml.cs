@@ -12,6 +12,8 @@ namespace TaskBook
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class HomePage : ContentPage
     {
+        StackLayout[] lay_arr = null;
+
         public HomePage()
         {
             InitializeComponent();
@@ -21,6 +23,19 @@ namespace TaskBook
         {
             await Navigation.PushAsync(new CreateTaskPage());
         }
+
+        async void ShowInfo(object sender, EventArgs e)
+        {
+            for (int i = 0; i < lay_arr.Length; i++)
+            {
+                if (lay_arr[i] == (sender as StackLayout))
+                {
+                    await DisplayAlert(Task.tasks[i].header, Task.tasks[i].text, "OK");
+                }
+            }
+        }
+
+
 
         protected override void OnAppearing()
         {
@@ -43,20 +58,75 @@ namespace TaskBook
                     create_task_button.Clicked += CreateTask;
 
                     layout.Children.Add(create_task_button);
+                    Content = layout;
                 }
                 else
                 {
-                    /*foreach (var item in Task.tasks)
+                    ScrollView scrollView = new ScrollView() { Padding = 10 };
+
+                    if (Task.tasks.Length > 0)
                     {
-                        Label header = new Label() { Text = item.header, FontSize = 30, Margin = 20 };
-                        Label text = new Label() { Text = item.text, FontSize = 18, Margin = 20 };
+                        StackLayout[] new_lay_arr = new StackLayout[Task.tasks.Length];
+                        lay_arr = new_lay_arr;
 
-                        layout.Children.Add(header);
-                        layout.Children.Add(text);
-                    }*/
+                        for (int i = 0; i < Task.tasks.Length; i++)
+                        {
+                            StackLayout vertLayout = new StackLayout();
+
+                            Frame task_frame = new Frame()
+                            {
+                                BorderColor = Color.Black,
+                                CornerRadius = 10,
+                                Padding = 10,
+                                Content = vertLayout
+                            };
+
+                            Label header_label = new Label()
+                            {
+                                Text = Task.tasks[i].header,
+                                TextColor = Color.Black,
+                                FontSize = 30
+                            };
+
+                            Label priority_label = new Label()
+                            {
+                                Text = Task.tasks[i].priority.ToString(),
+                                TextColor = Color.Black,
+                                FontSize = 15
+                            };
+
+                            Label deadline_label = new Label()
+                            {
+                                Text = Task.tasks[i].deadline,
+                                TextColor = Color.Black,
+                                FontSize = 15
+                            };
+
+                            Label worker_label = new Label()
+                            {
+                                Text = Task.tasks[i].worker ?? "Над заданием никто не работает",
+                                TextColor = Color.Black,
+                                FontSize = 15
+                            };
+
+                            vertLayout.Children.Add(header_label);
+                            vertLayout.Children.Add(priority_label);
+                            vertLayout.Children.Add(deadline_label);
+                            vertLayout.Children.Add(worker_label);
+
+                            layout.Children.Add(task_frame);
+
+                            TapGestureRecognizer tapGestureRecognizer = new TapGestureRecognizer();
+                            tapGestureRecognizer.Tapped += ShowInfo;
+                            vertLayout.GestureRecognizers.Add(tapGestureRecognizer);
+
+                            lay_arr[i] = vertLayout;
+                        }
+
+                        scrollView.Content = layout;
+                        Content = scrollView;
+                    }
                 }
-
-                Content = layout;
             }
         }
     }

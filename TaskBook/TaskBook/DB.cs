@@ -35,7 +35,15 @@ namespace TaskBook
                         deadline = reader[6].ToString()
                     };
 
-                    Task.AddTask(task);
+                    if (task.worker.Trim(' ') == "")
+                    {
+                        task.worker = null;
+                    }
+
+                    if (task.completed_status == false)
+                    {
+                        Task.AddTask(task);
+                    }
                 }
                 return "ok";
             }
