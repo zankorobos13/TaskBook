@@ -16,7 +16,7 @@ namespace TaskBook
 
         protected override void OnStart()
         {
-            if (Preferences.Get("room", null) != null && Preferences.Get("role", null) == "user")
+            if (Preferences.Get("room", null) != null)
             {
                 DB.GetTasks();
             }

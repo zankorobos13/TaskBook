@@ -155,9 +155,9 @@ namespace TaskBook
                     await DisplayAlert("Ошибка!", "Пустой текст задания", "OK");
                     return;
                 }
-                else if (task.header.Length >= 100)
+                else if (task.header.Length >= 90)
                 {
-                    await DisplayAlert("Ошибка!", "Заголовок задания должен содеражть менее 100 символов", "OK");
+                    await DisplayAlert("Ошибка!", "Заголовок задания должен содеражать менее 90 символов", "OK");
                     return;
                 }
 

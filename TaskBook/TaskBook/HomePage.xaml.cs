@@ -12,7 +12,7 @@ namespace TaskBook
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class HomePage : ContentPage
     {
-        StackLayout[] lay_arr = null;
+        public StackLayout[] lay_arr = null;
 
         public HomePage()
         {
@@ -24,7 +24,12 @@ namespace TaskBook
             await Navigation.PushAsync(new CreateTaskPage());
         }
 
-        async void ShowInfo(object sender, EventArgs e)
+        private async void WatchTasks(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new TaskListPage());
+        }
+
+        private async void ShowInfo(object sender, EventArgs e)
         {
             for (int i = 0; i < lay_arr.Length; i++)
             {
@@ -56,9 +61,22 @@ namespace TaskBook
                         Margin = new Thickness(30, 100, 30, 0)
                     };
 
+                    Button watch_tasks_button = new Button()
+                    {
+                        Text = "Все задания",
+                        FontSize = 25,
+                        TextColor = Color.White,
+                        BackgroundColor = Color.FromHex("#000080"),
+                        CornerRadius = 20,
+                        Margin = new Thickness(30, 100, 30, 0)
+                    };
+
                     create_task_button.Clicked += CreateTask;
+                    watch_tasks_button.Clicked += WatchTasks;
 
                     layout.Children.Add(create_task_button);
+                    layout.Children.Add(watch_tasks_button);
+
                     Content = layout;
                 }
                 else

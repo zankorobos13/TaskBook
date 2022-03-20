@@ -12,6 +12,96 @@ namespace TaskBook
     {
         public readonly MySqlConnection connection = new MySqlConnection("server=remotemysql.com;port=3306;username=FFoXo8zLEg;password=22HWTsEDuI;database=FFoXo8zLEg");
 
+        public static string DeleteTask(string header)
+        {
+            try
+            {
+                DB db = new DB();
+                MySqlConnection connection = db.GetConnection();
+                db.OpenConnection();
+                string sql_command = "DELETE FROM `tasks` WHERE header = '" + header + "'";
+                MySqlCommand command = new MySqlCommand(sql_command, connection);
+                command.ExecuteNonQuery();
+                db.CloseConnection();
+
+                int id = 0;
+
+                for (int i = 0; i < Task.tasks.Length; i++)
+                {
+                    if (Task.tasks[i].header == Task.current_task.header)
+                    {
+                        id = i;
+                        break;
+                    }
+                }
+
+                Task[] new_tasks = new Task[Task.tasks.Length - 1];
+
+                for (int i = 0; i < id; i++)
+                {
+                    new_tasks[i] = Task.tasks[i];
+                }
+
+                for (int i = id; i < new_tasks.Length; i++)
+                {
+                    new_tasks[i] = Task.tasks[i + 1];
+                }
+
+                Task.tasks = new_tasks;
+
+                return "ok";
+            }
+            catch (Exception)
+            {
+                return "error";
+            }
+        }
+
+        public static string CompleteTask(string header)
+        {
+            try
+            {
+                DB db = new DB();
+                MySqlConnection connection = db.GetConnection();
+                db.OpenConnection();
+                string sql_command = "UPDATE `tasks` SET completed_status = true WHERE header = '" + header + "'";
+                MySqlCommand command = new MySqlCommand(sql_command, connection);
+                command.ExecuteNonQuery();
+                db.CloseConnection();
+
+                int id = 0;
+
+                for (int i = 0; i < Task.tasks.Length; i++)
+                {
+                    if (Task.tasks[i].header == Task.current_task.header)
+                    {
+                        id = i;
+                        break;
+                    }
+                }
+
+                Task[] new_tasks = new Task[Task.tasks.Length - 1];
+
+                for (int i = 0; i < id; i++)
+                {
+                    new_tasks[i] = Task.tasks[i];
+                }
+
+                for (int i = id; i < new_tasks.Length; i++)
+                {
+                    new_tasks[i] = Task.tasks[i + 1];
+                }
+
+                Task.tasks = new_tasks;
+
+                return "ok";
+            }
+            catch (Exception)
+            {
+                return "error";
+            }
+        }
+
         public static string DeclineTask(string header)
         {
             try
@@ -29,6 +119,7 @@ namespace TaskBook
                     if (item.header == Task.current_task.header)
                     {
                         item.worker = null;
+                        break;
                     }
                 }
 
@@ -57,6 +148,7 @@ namespace TaskBook
                     if (item.header == Task.current_task.header)
                     {
                         item.worker = Preferences.Get("login", null);
+                        break;
                     }
                 }
 
@@ -97,7 +189,7 @@ namespace TaskBook
                         task.worker = null;
                     }
 
-                    if (task.completed_status == false)
+                    if (Preferences.Get("role", null) == "admin" || task.completed_status == false)
                     {
                         Task.AddTask(task);
                     }

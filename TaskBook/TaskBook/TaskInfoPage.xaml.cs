@@ -17,7 +17,69 @@ namespace TaskBook
             InitializeComponent();
         }
 
-        
+        private async void CompleteTask(object sender, EventArgs e)
+        {
+            if (await DisplayAlert("Вы уверены?", "Вы действительно хотите завершить задание? Отменить это действие будет невозможно", "Да", "Нет") && DB.CompleteTask(Task.current_task.header) == "ok")
+            {
+                await DisplayAlert("Успех!", "Вы успешно завершили задание", "OK");
+                await Navigation.PopAsync();
+            }
+            else
+            {
+                await DisplayAlert("Ошибка!", "Ошибка подключения к базе данных", "OK");
+            }
+        }
+
+        private async void DeleteTask(object sender, EventArgs e)
+        {
+            if (await DisplayAlert("Вы уверены?", "Вы действительно хотите удалить задание? Отменить это действие будет невозможно", "Да", "Нет") && DB.DeleteTask(Task.current_task.header) == "ok")
+            {
+                await DisplayAlert("Успех!", "Вы успешно удалили задание", "OK");
+                await Navigation.PopAsync();
+            }
+            else
+            {
+                await DisplayAlert("Ошибка!", "Ошибка подключения к базе данных", "OK");
+            }
+        }
+
+        private async void AcceptTask(object sender, EventArgs e)
+        {
+            if (DB.AcceptTask(Task.current_task.header) == "ok")
+            {
+                foreach (Task item in Task.tasks)
+                {
+                    if (item.header == Task.current_task.header)
+                    {
+                        Task.current_task = item;
+                        OnAppearing();
+                    }
+                }
+            }
+            else
+            {
+                await DisplayAlert("Ошибка!", "Ошибка подключения к базе данных", "OK");
+            }
+        }
+
+        private async void DeclineTask(object sender, EventArgs e)
+        {
+            if (DB.DeclineTask(Task.current_task.header) == "ok")
+            {
+                foreach (Task item in Task.tasks)
+                {
+                    if (item.header == Task.current_task.header)
+                    {
+                        Task.current_task = item;
+                        OnAppearing();
+                    }
+                }
+            }
+            else
+            {
+                await DisplayAlert("Ошибка!", "Ошибка подключения к базе данных", "OK");
+            }
+        }
 
         protected override void OnAppearing()
         {
@@ -27,7 +89,7 @@ namespace TaskBook
             {
                 Text = Task.current_task.header,
                 TextColor = Color.Black,
-                FontSize = 30,
+                FontSize = 27,
                 FontAttributes = FontAttributes.Bold,
                 HorizontalTextAlignment = TextAlignment.Center,
                 HorizontalOptions = LayoutOptions.Center
@@ -82,70 +144,97 @@ namespace TaskBook
             layout.Children.Add(deadline_label);
             layout.Children.Add(worker_label);
 
-
-            Button button = new Button()
+            if (Preferences.Get("role", null) == "user")
             {
-                FontSize = 23,
-                TextColor = Color.White,
-                CornerRadius = 20,
-                Margin = new Thickness(0, 10, 0, 0)
-            };
+                Button button = new Button()
+                {
+                    FontSize = 23,
+                    TextColor = Color.White,
+                    CornerRadius = 20,
+                    Margin = new Thickness(0, 10, 0, 0)
+                };
 
-            if (Task.current_task.worker != Preferences.Get("login", null))
-            {
-                button.Text = "Принять задание";
-                button.BackgroundColor = Color.FromHex("#006400");
-                button.Clicked += AcceptTask;
+                if (Task.current_task.worker != Preferences.Get("login", null))
+                {
+                    button.Text = "Принять задание";
+                    button.BackgroundColor = Color.FromHex("#006400");
+                    button.Clicked += AcceptTask;
+                    layout.Children.Add(button);
+
+                }
+                else
+                {
+                    button.Text = "Отказаться от задания";
+                    button.BackgroundColor = Color.FromHex("#8B0000");
+                    button.Clicked += DeclineTask;
+                    layout.Children.Add(button);
+
+                    Button complete_button = new Button()
+                    {
+                        Text = "Завершить задание",
+                        FontSize = 23,
+                        TextColor = Color.White,
+                        BackgroundColor = Color.FromHex("#006400"),
+                        CornerRadius = 20,
+                        Margin = new Thickness(0, 10, 0, 0)
+                    };
+
+                    complete_button.Clicked += CompleteTask;
+
+                    layout.Children.Add(complete_button);
+
+                }
             }
             else
             {
-                button.Text = "Отказаться от задания";
-                button.BackgroundColor = Color.FromHex("#8B0000");
-                button.Clicked += DeclineTask;
+                Label status_label = new Label()
+                {
+                    Text = "Статус: ",
+                    FontAttributes = FontAttributes.Bold,
+                    HorizontalTextAlignment = TextAlignment.Center,
+                    HorizontalOptions = LayoutOptions.Center,
+                    FontSize = 30
+                };
+
+                if (Task.current_task.worker != null)
+                {
+                    if (Task.current_task.completed_status == true)
+                    {
+                        status_label.Text += "выполнено";
+                        status_label.TextColor = Color.FromHex("#006400");
+                    }
+                    else
+                    {
+                        status_label.Text += "в процессе выполнения";
+                        status_label.TextColor = Color.FromHex("#4682B4");
+                    }
+                }
+                else
+                {
+                    status_label.Text += "не принято";
+                    status_label.TextColor = Color.FromHex("#8B0000");
+                }
+
+                Button delete_task_button = new Button()
+                {
+                    Text = "Удалить задание",
+                    FontSize = 23,
+                    TextColor = Color.White,
+                    BackgroundColor = Color.FromHex("#8B0000"),
+                    CornerRadius = 20,
+                    Margin = new Thickness(0, 10, 0, 0)
+                };
+
+                delete_task_button.Clicked += DeleteTask;
+
+                layout.Children.Add(status_label);
+                layout.Children.Add(delete_task_button);
             }
 
-            layout.Children.Add(button);
+            
 
             Content = layout;
-
-
-            async void AcceptTask(object sender, EventArgs e)
-            {
-                if (DB.AcceptTask(Task.current_task.header) == "ok")
-                {
-                    foreach (Task item in Task.tasks)
-                    {
-                        if (item.header == Task.current_task.header)
-                        {
-                            Task.current_task = item;
-                            OnAppearing();
-                        }
-                    }
-                }
-                else
-                {
-                    await DisplayAlert("Ошибка!", "Ошибка подключения к базе данных", "OK");
-                }
-            }
-
-            async void DeclineTask(object sender, EventArgs e)
-            {
-                if (DB.DeclineTask(Task.current_task.header) == "ok")
-                {
-                    foreach (Task item in Task.tasks)
-                    {
-                        if (item.header == Task.current_task.header)
-                        {
-                            Task.current_task = item;
-                            OnAppearing();
-                        }
-                    }
-                }
-                else
-                {
-                    await DisplayAlert("Ошибка!", "Ошибка подключения к базе данных", "OK");
-                }
-            }
+            
         }
     }
 }

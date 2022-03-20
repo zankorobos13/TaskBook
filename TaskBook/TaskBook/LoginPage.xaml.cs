@@ -116,7 +116,7 @@ namespace TaskBook
                 {
                     Preferences.Set("login", login);
 
-                    if (Preferences.Get("room", null) != null && Preferences.Get("role", null) == "user")
+                    if (Preferences.Get("room", null) != null)
                     {
                         Task.ClearTaks();
                         DB.GetTasks();
