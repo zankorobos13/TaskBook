@@ -4,12 +4,57 @@ using System.Text;
 using MySqlConnector;
 using Xamarin.Essentials;
 
+
 namespace TaskBook
 {
 
     public class DB
     {
         public readonly MySqlConnection connection = new MySqlConnection("server=remotemysql.com;port=3306;username=FFoXo8zLEg;password=22HWTsEDuI;database=FFoXo8zLEg");
+
+        public static string DeclineTask(string header)
+        {
+            try
+            {
+                DB db = new DB();
+                MySqlConnection connection = db.GetConnection();
+                db.OpenConnection();
+                string sql_command = "UPDATE `tasks` SET worker = NULL WHERE header = '" + header + "'";
+                MySqlCommand command = new MySqlCommand(sql_command, connection);
+                command.ExecuteNonQuery();
+                db.CloseConnection();
+
+                Task.ClearTaks();
+
+                return GetTasks();
+            }
+            catch (Exception)
+            {
+                return "error";
+            }
+        }
+
+        public static string AcceptTask(string header)
+        {
+            try
+            {
+                DB db = new DB();
+                MySqlConnection connection = db.GetConnection();
+                db.OpenConnection();
+                string sql_command = "UPDATE `tasks` SET worker = '" + Preferences.Get("login", null) + "' WHERE header = '" + header + "'";
+                MySqlCommand command = new MySqlCommand(sql_command, connection);
+                command.ExecuteNonQuery();
+                db.CloseConnection();
+
+                Task.ClearTaks();
+
+                return GetTasks();
+            }
+            catch (Exception)
+            {
+                return "error";
+            }
+        }
 
         public static string GetTasks()
         {
@@ -268,7 +313,7 @@ namespace TaskBook
             {
                 return "error";
             }
-            
+
 
         }
 

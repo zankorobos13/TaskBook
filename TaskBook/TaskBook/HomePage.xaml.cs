@@ -30,7 +30,8 @@ namespace TaskBook
             {
                 if (lay_arr[i] == (sender as StackLayout))
                 {
-                    await DisplayAlert(Task.tasks[i].header, Task.tasks[i].text, "OK");
+                    Task.current_task = Task.tasks[i];
+                    await Navigation.PushAsync(new TaskInfoPage());
                 }
             }
         }
@@ -78,6 +79,7 @@ namespace TaskBook
                                 BorderColor = Color.Black,
                                 CornerRadius = 10,
                                 Padding = 10,
+                                HasShadow = false,
                                 Content = vertLayout
                             };
 
@@ -85,29 +87,34 @@ namespace TaskBook
                             {
                                 Text = Task.tasks[i].header,
                                 TextColor = Color.Black,
-                                FontSize = 30
+                                FontSize = 30,
+                                FontAttributes = FontAttributes.Bold
                             };
 
                             Label priority_label = new Label()
                             {
-                                Text = Task.tasks[i].priority.ToString(),
+                                Text = "Приоритет: " + Task.tasks[i].priority.ToString(),
                                 TextColor = Color.Black,
-                                FontSize = 15
+                                FontSize = 18
                             };
+
+                            string[] deadline_arr = Task.tasks[i].deadline.Split(' ');
 
                             Label deadline_label = new Label()
                             {
-                                Text = Task.tasks[i].deadline,
+                                Text = "Дедлайн: " + deadline_arr[0] + "." + deadline_arr[1] + "." + deadline_arr[2] + " " + deadline_arr[3] + ":" + deadline_arr[4],
                                 TextColor = Color.Black,
-                                FontSize = 15
+                                FontSize = 18
                             };
 
+                            
                             Label worker_label = new Label()
                             {
-                                Text = Task.tasks[i].worker ?? "Над заданием никто не работает",
-                                TextColor = Color.Black,
-                                FontSize = 15
+                                FontSize = 18
                             };
+
+                            worker_label.Text = Task.tasks[i].worker == null ? "Над заданием никто не работает" : "Исполнитель: " + Task.tasks[i].worker;
+                            worker_label.TextColor = Task.tasks[i].worker == null ? Color.Red : Color.Green;
 
                             vertLayout.Children.Add(header_label);
                             vertLayout.Children.Add(priority_label);
@@ -127,6 +134,11 @@ namespace TaskBook
                         Content = scrollView;
                     }
                 }
+            }
+            else
+            {
+                StackLayout layout = new StackLayout();
+                Content = layout;
             }
         }
     }
