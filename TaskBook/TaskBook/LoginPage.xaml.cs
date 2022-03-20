@@ -118,7 +118,7 @@ namespace TaskBook
 
                     if (Preferences.Get("room", null) != null)
                     {
-                        Task.ClearTaks();
+                        Task.ClearTasks();
                         DB.GetTasks();
                     }
 

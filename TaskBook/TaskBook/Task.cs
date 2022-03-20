@@ -22,7 +22,7 @@ namespace TaskBook
             return DB.AddTask(task.header, task.text, task.priority, task.deadline);
         }
 
-        public static void ClearTaks()
+        public static void ClearTasks()
         {
             tasks = new Task[0];
         }
@@ -35,6 +35,129 @@ namespace TaskBook
                 new_tasks[i] = tasks[i];
             }
             new_tasks[new_tasks.Length - 1] = task;
+            tasks = new_tasks;
+        }
+
+        public static void SortByCreation(bool NewFirst = true)
+        {
+            ClearTasks();
+            DB.GetTasks();
+
+            if (NewFirst)
+            {
+                Array.Reverse(tasks);
+            }
+        }
+
+        public static void SortByDateTime(bool toLower = true)
+        {
+            ClearTasks();
+            DB.GetTasks();
+
+            if (toLower)
+            {
+                for (int i = 0; i < tasks.Length - 1; i++)
+                {
+                    for (int j = 0; j < tasks.Length - 1; j++)
+                    {
+                        string[] d = tasks[j].deadline.Split(' ');
+                        DateTime d1 = new DateTime(2000 + int.Parse(d[2]), int.Parse(d[1]), int.Parse(d[0]), int.Parse(d[3]), int.Parse(d[4]), 0);
+                        d = tasks[j + 1].deadline.Split(' ');
+                        DateTime d2 = new DateTime(2000 + int.Parse(d[2]), int.Parse(d[1]), int.Parse(d[0]), int.Parse(d[3]), int.Parse(d[4]), 0);
+
+                        if (DateTime.Compare(d1, d2) < 0)
+                        {
+                            Task temp = tasks[j];
+                            tasks[j] = tasks[j + 1];
+                            tasks[j + 1] = temp;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < tasks.Length - 1; i++)
+                {
+                    for (int j = 0; j < tasks.Length - 1; j++)
+                    {
+                        string[] d = tasks[j].deadline.Split(' ');
+                        DateTime d1 = new DateTime(2000 + int.Parse(d[2]), int.Parse(d[1]), int.Parse(d[0]), int.Parse(d[3]), int.Parse(d[4]), 0);
+                        d = tasks[j + 1].deadline.Split(' ');
+                        DateTime d2 = new DateTime(2000 + int.Parse(d[2]), int.Parse(d[1]), int.Parse(d[0]), int.Parse(d[3]), int.Parse(d[4]), 0);
+
+                        if (DateTime.Compare(d1, d2) > 0)
+                        {
+                            Task temp = tasks[j];
+                            tasks[j] = tasks[j + 1];
+                            tasks[j + 1] = temp;
+                        }
+                    }
+                }
+            }
+        }
+
+        public static void SortByPriority(bool toLower = true)
+        {
+            ClearTasks();
+            DB.GetTasks();
+
+            if (toLower)
+            {
+                for (int i = 0; i < tasks.Length - 1; i++)
+                {
+                    for (int j = 0; j < tasks.Length - 1; j++)
+                    {
+                        if (tasks[j].priority < tasks[j + 1].priority)
+                        {
+                            Task temp = tasks[j];
+                            tasks[j] = tasks[j + 1];
+                            tasks[j + 1] = temp;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < tasks.Length - 1; i++)
+                {
+                    for (int j = 0; j < tasks.Length - 1; j++)
+                    {
+                        if (tasks[j].priority > tasks[j + 1].priority)
+                        {
+                            Task temp = tasks[j];
+                            tasks[j] = tasks[j + 1];
+                            tasks[j + 1] = temp;
+                        }
+                    }
+                }
+            }
+        }
+
+        public static void SortByFree()
+        {
+            ClearTasks();
+            DB.GetTasks();
+
+            int n = 0;
+
+            foreach (Task item in tasks)
+            {
+                if (item.worker == null)
+                {
+                    n++;
+                }
+            }
+
+            Task[] new_tasks = new Task[n];
+
+            for (int i = 0; i < tasks.Length; i++)
+            {
+                if (tasks[i].worker == null)
+                {
+                    new_tasks[i] = tasks[i];
+                }
+            }
+
             tasks = new_tasks;
         }
     }

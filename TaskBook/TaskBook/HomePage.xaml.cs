@@ -19,6 +19,42 @@ namespace TaskBook
             InitializeComponent();
         }
 
+        private async void Sort(object sender, EventArgs e)
+        {
+            string sort_method = await DisplayActionSheet("Метод сортировки", "Отмена", "Выйти", "Сначала новые", "Сначала старые", "По приоритету (уб)", "По приоритету (возр)", "Дедлайн (уб)", "Дедлайн (возр)", "Свободные");
+
+            if (sort_method == "Сначала новые")
+            {
+                Task.SortByCreation();
+            }
+            else if (sort_method == "Сначала старые")
+            {
+                Task.SortByCreation(false);
+            }
+            else if (sort_method == "По приоритету (уб)")
+            {
+                Task.SortByPriority();
+            }
+            else if (sort_method == "По приоритету (возр)")
+            {
+                Task.SortByPriority(false);
+            }
+            else if (sort_method == "Дедлайн (уб)")
+            {
+                Task.SortByDateTime();
+            }
+            else if (sort_method == "Дедлайн (возр)")
+            {
+                Task.SortByDateTime(false);
+            }
+            else if (sort_method == "Свободные")
+            {
+                Task.SortByFree();
+            }
+
+            OnAppearing();
+        }
+
         private async void CreateTask(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new CreateTaskPage());
@@ -81,6 +117,19 @@ namespace TaskBook
                 }
                 else
                 {
+                    Button sort_button = new Button()
+                    {
+                        Text = "Сортировать",
+                        FontSize = 25,
+                        TextColor = Color.White,
+                        BackgroundColor = Color.FromHex("#000080"),
+                        CornerRadius = 20
+                    };
+
+                    sort_button.Clicked += Sort;
+
+                    layout.Children.Add(sort_button);
+
                     ScrollView scrollView = new ScrollView() { Padding = 10 };
 
                     if (Task.tasks.Length > 0)
@@ -150,6 +199,11 @@ namespace TaskBook
 
                         scrollView.Content = layout;
                         Content = scrollView;
+                    }
+                    else
+                    {
+                        layout.Padding = 10;
+                        Content = layout;
                     }
                 }
             }
