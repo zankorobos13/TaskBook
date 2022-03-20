@@ -24,9 +24,15 @@ namespace TaskBook
                 command.ExecuteNonQuery();
                 db.CloseConnection();
 
-                Task.ClearTaks();
+                foreach (Task item in Task.tasks)
+                {
+                    if (item.header == Task.current_task.header)
+                    {
+                        item.worker = null;
+                    }
+                }
 
-                return GetTasks();
+                return "ok";
             }
             catch (Exception)
             {
@@ -46,9 +52,15 @@ namespace TaskBook
                 command.ExecuteNonQuery();
                 db.CloseConnection();
 
-                Task.ClearTaks();
+                foreach (Task item in Task.tasks)
+                {
+                    if (item.header == Task.current_task.header)
+                    {
+                        item.worker = Preferences.Get("login", null);
+                    }
+                }
 
-                return GetTasks();
+                return "ok";
             }
             catch (Exception)
             {

@@ -118,8 +118,7 @@ namespace TaskBook
                         if (item.header == Task.current_task.header)
                         {
                             Task.current_task = item;
-                            await DisplayAlert("Успех!", "Задание принято", "OK");
-                            await Navigation.PopAsync();
+                            OnAppearing();
                         }
                     }
                 }
@@ -138,8 +137,7 @@ namespace TaskBook
                         if (item.header == Task.current_task.header)
                         {
                             Task.current_task = item;
-                            await DisplayAlert("Успех!", "Вы отказались от задания", "OK");
-                            await Navigation.PopAsync();
+                            OnAppearing();
                         }
                     }
                 }
