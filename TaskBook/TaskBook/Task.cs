@@ -38,12 +38,25 @@ namespace TaskBook
             tasks = new_tasks;
         }
 
+        public static void AddTaskToFirst(Task task)
+        {
+            Task[] new_tasks = new Task[tasks.Length + 1];
+            new_tasks[0] = task;
+
+            for (int i = 0; i < tasks.Length; i++)
+            {
+                new_tasks[i + 1] = tasks[i];
+            }
+            
+            tasks = new_tasks;
+        }
+
         public static void SortByCreation(bool NewFirst = true)
         {
             ClearTasks();
             DB.GetTasks();
 
-            if (NewFirst)
+            if (!NewFirst)
             {
                 Array.Reverse(tasks);
             }

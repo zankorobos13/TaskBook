@@ -195,6 +195,7 @@ namespace TaskBook
                     }
                 }
 
+                Array.Reverse(Task.tasks);
                 db.CloseConnection();
 
                 return "ok";
@@ -216,6 +217,18 @@ namespace TaskBook
                 MySqlCommand command = new MySqlCommand(sql_command, connection);
                 command.ExecuteNonQuery();
                 db.CloseConnection();
+
+                Task.AddTaskToFirst(new Task()
+                {
+                    header = header,
+                    text = text,
+                    priority = priority,
+                    deadline = deadline,
+                    room = Preferences.Get("room", null),
+                    worker = null,
+                    completed_status = false,
+                });
+
                 return "ok";
             }
             catch (Exception)
