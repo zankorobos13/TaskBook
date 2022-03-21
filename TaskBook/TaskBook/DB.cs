@@ -194,6 +194,9 @@ namespace TaskBook
                         Task.AddTask(task);
                     }
                 }
+
+                db.CloseConnection();
+
                 return "ok";
             }
             catch (Exception)
