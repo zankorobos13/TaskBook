@@ -180,7 +180,7 @@ namespace TaskBook
                                 FontSize = 18
                             };
 
-                            worker_label.Text = Task.tasks[i].worker == null ? "Над заданием никто не работает" : "Исполнитель: " + Task.tasks[i].worker;
+                            worker_label.Text = Task.tasks[i].worker == null ? "Над заданием никто не работает" : "Исполнитель: " + (Task.tasks[i].worker == Preferences.Get("login", null) ? "Вы" : Task.tasks[i].worker);
                             worker_label.TextColor = Task.tasks[i].worker == null ? Color.Red : Color.Green;
 
                             vertLayout.Children.Add(header_label);

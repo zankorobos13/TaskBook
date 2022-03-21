@@ -162,12 +162,13 @@ namespace TaskBook
             }
 
             Task[] new_tasks = new Task[n];
+            int j = 0;
 
             for (int i = 0; i < tasks.Length; i++)
             {
                 if (tasks[i].worker == null)
                 {
-                    new_tasks[i] = tasks[i];
+                    new_tasks[j++] = tasks[i];
                 }
             }
 

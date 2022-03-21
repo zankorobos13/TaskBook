@@ -24,7 +24,7 @@ namespace TaskBook
                 await DisplayAlert("Успех!", "Вы успешно завершили задание", "OK");
                 await Navigation.PopAsync();
             }
-            else
+            else if (DB.CompleteTask(Task.current_task.header) == "error")
             {
                 await DisplayAlert("Ошибка!", "Ошибка подключения к базе данных", "OK");
             }
@@ -135,7 +135,7 @@ namespace TaskBook
                 FontSize = 20
             };
 
-            worker_label.Text = Task.current_task.worker == null ? "Над заданием никто не работает" : "Исполнитель: " + Task.current_task.worker;
+            worker_label.Text = Task.current_task.worker == null ? "Над заданием никто не работает" : "Исполнитель: " + (Task.current_task.worker == Preferences.Get("login", null) ? "Вы" : Task.current_task.worker);
 
 
             layout.Children.Add(header_label);
