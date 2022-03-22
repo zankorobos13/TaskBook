@@ -12,6 +12,41 @@ namespace TaskBook
     {
         public readonly MySqlConnection connection = new MySqlConnection("server=remotemysql.com;port=3306;username=FFoXo8zLEg;password=22HWTsEDuI;database=FFoXo8zLEg");
 
+
+        public static string[] GetUsers()
+        {
+            try
+            {
+                DB db = new DB();
+                MySqlConnection connection = db.GetConnection();
+                db.OpenConnection();
+                string sql_command = "SELECT * FROM `users` WHERE room = '" + Preferences.Get("room", null) + "' AND role = 'user'";
+                MySqlCommand command = new MySqlCommand(sql_command, connection);
+                MySqlDataReader reader = command.ExecuteReader();
+
+                string[] users = new string[0];
+
+                while (reader.Read())
+                {
+                    string[] new_users = new string[users.Length + 1];
+
+                    for (int i = 0; i < users.Length; i++)
+                    {
+                        new_users[i] = users[i];
+                    }
+
+                    new_users[users.Length] = reader[0].ToString();
+                    users = new_users;
+                }
+
+                return users;
+            }
+            catch (Exception)
+            {
+                return new string[0];
+            }
+        }
+
         public static string DeleteTask(string header)
         {
             try
