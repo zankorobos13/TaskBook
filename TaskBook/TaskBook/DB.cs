@@ -13,6 +13,51 @@ namespace TaskBook
         public readonly MySqlConnection connection = new MySqlConnection("server=remotemysql.com;port=3306;username=FFoXo8zLEg;password=22HWTsEDuI;database=FFoXo8zLEg");
 
 
+        public static Task[] GetTasks(string username)
+        {
+            try
+            {
+                DB db = new DB();
+                MySqlConnection connection = db.GetConnection();
+                db.OpenConnection();
+                string sql_command = "SELECT * FROM `tasks` WHERE worker = '" + username + "'";
+                MySqlCommand command = new MySqlCommand(sql_command, connection);
+                MySqlDataReader reader = command.ExecuteReader();
+
+                Task[] tasks = new Task[0];
+
+                while (reader.Read())
+                {
+                    Task task = new Task()
+                    {
+                        header = reader[0].ToString(),
+                        text = reader[1].ToString(),
+                        worker = reader[2].ToString(),
+                        priority = int.Parse(reader[3].ToString()),
+                        room = reader[4].ToString(),
+                        completed_status = bool.Parse(reader[5].ToString()),
+                        deadline = reader[6].ToString()
+                    };
+
+                    Task[] new_tasks = new Task[tasks.Length + 1];
+
+                    for (int i = 0; i < tasks.Length; i++)
+                    {
+                        new_tasks[i] = tasks[i];
+                    }
+
+                    new_tasks[tasks.Length] = task;
+                    tasks = new_tasks;
+                }
+
+                return tasks;
+            }
+            catch (Exception)
+            {
+                return new Task[0];
+            }
+        }
+
         public static string[] GetUsers()
         {
             try

@@ -196,7 +196,27 @@ namespace TaskBook
                     FontSize = 30
                 };
 
-                if (Task.current_task.worker != null)
+                if (Task.current_task.completed_status)
+                {
+                    status_label.Text += "выполнено";
+                    status_label.TextColor = Color.FromHex("#006400");
+                }
+                else
+                {
+                    if (Task.current_task.worker != null)
+                    {
+                        status_label.Text += "в процессе выполнения";
+                        status_label.TextColor = Color.FromHex("#4682B4");
+                    }
+                    else
+                    {
+                        status_label.Text += "не принято";
+                        status_label.TextColor = Color.FromHex("#8B0000");
+                    }
+                }
+
+
+                /*if (Task.current_task.worker != null)
                 {
                     if (Task.current_task.completed_status == true)
                     {
@@ -213,7 +233,7 @@ namespace TaskBook
                 {
                     status_label.Text += "не принято";
                     status_label.TextColor = Color.FromHex("#8B0000");
-                }
+                }*/
 
                 Button delete_task_button = new Button()
                 {
