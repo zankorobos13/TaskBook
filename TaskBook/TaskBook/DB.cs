@@ -50,6 +50,8 @@ namespace TaskBook
                     tasks = new_tasks;
                 }
 
+                db.CloseConnection();
+
                 return tasks;
             }
             catch (Exception)
@@ -83,6 +85,8 @@ namespace TaskBook
                     new_users[users.Length] = reader[0].ToString();
                     users = new_users;
                 }
+
+                db.CloseConnection();
 
                 return users;
             }
