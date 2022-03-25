@@ -182,7 +182,7 @@ namespace TaskBook
                     {
                         Preferences.Set("login", login);
                         Preferences.Set("room", null);
-                        await DisplayAlert("Успех!", "Вы успешно зарегестрировались", "OK");
+                        await DisplayAlert("Успех!", "Вы успешно зарегистрировались", "OK");
                         await Navigation.PopAsync();
                     }
                     else if (reg_status == "repeat")
