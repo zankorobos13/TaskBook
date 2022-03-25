@@ -144,7 +144,7 @@ namespace TaskBook
             layout.Children.Add(deadline_label);
             layout.Children.Add(worker_label);
 
-            if (Preferences.Get("role", null) == "user" && Task.current_task.worker == null)
+            if (Preferences.Get("role", null) == "user" && (Task.current_task.worker == null) || Task.current_task.worker == Preferences.Get("login", null))
             {
                 Button button = new Button()
                 {
