@@ -144,7 +144,7 @@ namespace TaskBook
             layout.Children.Add(deadline_label);
             layout.Children.Add(worker_label);
 
-            if (Preferences.Get("role", null) == "user")
+            if (Preferences.Get("role", null) == "user" && Task.current_task.worker == null)
             {
                 Button button = new Button()
                 {
@@ -185,7 +185,7 @@ namespace TaskBook
 
                 }
             }
-            else
+            else if (Preferences.Get("role", null) == "admin")
             {
                 Label status_label = new Label()
                 {
