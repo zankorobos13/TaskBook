@@ -13,6 +13,27 @@ namespace TaskBook
         public readonly MySqlConnection connection = new MySqlConnection("server=remotemysql.com;port=3306;username=FFoXo8zLEg;password=22HWTsEDuI;database=FFoXo8zLEg");
 
 
+        public static string IncreaseUser(string username)
+        {
+            try
+            {
+                DB db = new DB();
+                MySqlConnection connection = db.GetConnection();
+                db.OpenConnection();
+                string sql_command = "UPDATE `users` SET role = 'admin' WHERE login = '" + username + "'";
+                MySqlCommand command = new MySqlCommand(sql_command, connection);
+                command.ExecuteNonQuery();
+                db.CloseConnection();
+
+                return "ok";
+            }
+            catch (Exception)
+            {
+                return "error";
+            }
+
+        }
+
         public static Task[] GetTasks(string username)
         {
             try
@@ -20,7 +41,7 @@ namespace TaskBook
                 DB db = new DB();
                 MySqlConnection connection = db.GetConnection();
                 db.OpenConnection();
-                string sql_command = "SELECT * FROM `tasks` WHERE worker = '" + username + "'";
+                string sql_command = "SELECT * FROM `tasks` WHERE worker = '" + username + "' AND room = '" + Preferences.Get("room", null) + "'";
                 MySqlCommand command = new MySqlCommand(sql_command, connection);
                 MySqlDataReader reader = command.ExecuteReader();
 
@@ -103,7 +124,7 @@ namespace TaskBook
                 DB db = new DB();
                 MySqlConnection connection = db.GetConnection();
                 db.OpenConnection();
-                string sql_command = "DELETE FROM `tasks` WHERE header = '" + header + "'";
+                string sql_command = "DELETE FROM `tasks` WHERE header = '" + header + "' AND room = '" + Preferences.Get("room", null) + "'";
                 MySqlCommand command = new MySqlCommand(sql_command, connection);
                 command.ExecuteNonQuery();
                 db.CloseConnection();
@@ -148,7 +169,7 @@ namespace TaskBook
                 DB db = new DB();
                 MySqlConnection connection = db.GetConnection();
                 db.OpenConnection();
-                string sql_command = "UPDATE `tasks` SET completed_status = true WHERE header = '" + header + "'";
+                string sql_command = "UPDATE `tasks` SET completed_status = true WHERE header = '" + header + "' AND room = '" + Preferences.Get("room", null) + "'";
                 MySqlCommand command = new MySqlCommand(sql_command, connection);
                 command.ExecuteNonQuery();
                 db.CloseConnection();
@@ -193,7 +214,7 @@ namespace TaskBook
                 DB db = new DB();
                 MySqlConnection connection = db.GetConnection();
                 db.OpenConnection();
-                string sql_command = "UPDATE `tasks` SET worker = NULL WHERE header = '" + header + "'";
+                string sql_command = "UPDATE `tasks` SET worker = NULL WHERE header = '" + header + "' AND room = '" + Preferences.Get("room", null) + "'";
                 MySqlCommand command = new MySqlCommand(sql_command, connection);
                 command.ExecuteNonQuery();
                 db.CloseConnection();
@@ -222,7 +243,7 @@ namespace TaskBook
                 DB db = new DB();
                 MySqlConnection connection = db.GetConnection();
                 db.OpenConnection();
-                string sql_command = "UPDATE `tasks` SET worker = '" + Preferences.Get("login", null) + "' WHERE header = '" + header + "'";
+                string sql_command = "UPDATE `tasks` SET worker = '" + Preferences.Get("login", null) + "' WHERE header = '" + header + "' AND room = '" + Preferences.Get("room", null) + "'";
                 MySqlCommand command = new MySqlCommand(sql_command, connection);
                 command.ExecuteNonQuery();
                 db.CloseConnection();

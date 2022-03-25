@@ -36,7 +36,7 @@ namespace TaskBook
                 BorderColor = Color.Black,
                 CornerRadius = 50,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                Margin = new Thickness(30, 50, 30, 0),
+                Margin = new Thickness(30, 20, 30, 0),
                 Padding = new Thickness(0, 5, 0, 5),
                 Content = header_entry
             };
@@ -46,7 +46,7 @@ namespace TaskBook
                 Placeholder = "Текст задания",
                 FontSize = 20,
                 WidthRequest = 215,
-                HeightRequest = 300
+                HeightRequest = 250
             };
 
             Frame text_frame = new Frame()

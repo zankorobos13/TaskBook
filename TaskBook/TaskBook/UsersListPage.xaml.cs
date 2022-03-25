@@ -42,6 +42,17 @@ namespace TaskBook
             StackLayout[] new_lay_arr = new StackLayout[users.Length];
             lay_arr = new_lay_arr;
 
+            Label info_label = new Label()
+            {
+                Text = "Пользователи:",
+                FontSize = 30,
+                FontAttributes = FontAttributes.Bold,
+                TextColor = Color.Black,
+                Margin = 10
+            };
+
+            layout.Children.Add(info_label);
+
             if (users.Length > 0)
             {
                 ScrollView scrollView = new ScrollView();

@@ -32,6 +32,23 @@ namespace TaskBook
             }
         }
 
+        private async void IncreaseUser(object sender, EventArgs e)
+        {
+            if (await DisplayAlert("Вы уверены?", "Вы действительно хотите повысить этого пользователя? Действие невозможно отменить", "Да", "Нет"))
+            {
+                if (DB.IncreaseUser(Preferences.Get("current_user", null)) == "ok")
+                {
+                    await DisplayAlert("Успех!", "Пользователь повышен", "OK");
+                    await Navigation.PopAsync();
+                }
+                else
+                {
+                    await DisplayAlert("Ошибка!", "Ошибка подключения к базе данных", "OK");
+                }
+            }
+        }
+
+
         protected override void OnAppearing()
         {
             tasks = DB.GetTasks(Preferences.Get("current_user", null));
@@ -48,7 +65,20 @@ namespace TaskBook
                 HorizontalTextAlignment = TextAlignment.Center
             };
 
+            Button increase_button = new Button()
+            {
+                Text = "Повысить до админа",
+                FontSize = 24,
+                TextColor = Color.White,
+                BackgroundColor = Color.FromHex("#000080"),
+                CornerRadius = 20,
+                Margin = new Thickness(0, 10, 0, 10)
+            };
+
+            increase_button.Clicked += IncreaseUser;
+
             layout.Children.Add(username_label);
+            layout.Children.Add(increase_button);
 
             if (tasks.Length > 0)
             {
@@ -101,8 +131,8 @@ namespace TaskBook
                         FontSize = 18
                     };
 
-                    status_label.Text = d1 > DateTime.Now ? "Статус: Не выполнено вовремя" : (tasks[i].completed_status ? "Статус: Выполнено" : "Статус: В процессе выполнения");
-                    status_label.TextColor = d1 > DateTime.Now ? Color.FromHex("#8B0000") : (tasks[i].completed_status ? Color.FromHex("#006400") : Color.FromHex("#4682B4"));
+                    status_label.Text = DateTime.Now > d1 ? "Статус: Не выполнено вовремя" : (tasks[i].completed_status ? "Статус: Выполнено" : "Статус: В процессе выполнения");
+                    status_label.TextColor = DateTime.Now > d1 ? Color.FromHex("#8B0000") : (tasks[i].completed_status ? Color.FromHex("#006400") : Color.FromHex("#4682B4"));
 
 
                     vertLayout.Children.Add(header_label);
