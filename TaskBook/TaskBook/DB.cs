@@ -10,7 +10,9 @@ namespace TaskBook
 
     public class DB
     {
-        public readonly MySqlConnection connection = new MySqlConnection("server=remotemysql.com;port=3306;username=FFoXo8zLEg;password=22HWTsEDuI;database=FFoXo8zLEg");
+        // public readonly MySqlConnection connection = new MySqlConnection("server=remotemysql.com;port=3306;username=FFoXo8zLEg;password=22HWTsEDuI;database=FFoXo8zLEg");
+
+        public readonly MySqlConnection connection = new MySqlConnection("server=sql8.freemysqlhosting.net;port=3306;username=sql8593991;password=ncCxPsNXdE;database=sql8593991");
 
 
         public static string IncreaseUser(string username)
@@ -307,7 +309,9 @@ namespace TaskBook
             }
             catch (Exception)
             {
+                Task[] a = Task.tasks;
                 return "error";
+                
             }
         }
 

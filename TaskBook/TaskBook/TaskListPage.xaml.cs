@@ -67,8 +67,9 @@ namespace TaskBook
             }
         }
 
-        protected override void OnAppearing()
+        async protected override void OnAppearing()
         {
+            
             StackLayout layout = new StackLayout();
             ScrollView scrollView = new ScrollView() { Padding = 10 };
 
@@ -152,6 +153,8 @@ namespace TaskBook
 
                 scrollView.Content = layout;
                 Content = scrollView;
+
+                
             }
             else
             {
